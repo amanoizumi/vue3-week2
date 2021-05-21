@@ -72,4 +72,3 @@ function formCheck() {
 
 logInBtn.addEventListener("click", formCheck);
 checkLogInBtn.addEventListener("click", checkLogIn);
-console.log(document.referrer);
