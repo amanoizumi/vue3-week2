@@ -1,0 +1,22 @@
+html,
+body {
+  height: auto;
+  text-align: center;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.app-style {
+  height: 100vh;
+  display: flex;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
