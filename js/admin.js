@@ -100,7 +100,7 @@ const app = {
         if (!res.data.success) {
           this.showError("您尚未登入！即將跳轉回登入頁面");
           setTimeout(() => {
-            window.location.replace("logIn.html");
+            window.location.replace("signin.html");
           }, 3000);
         } else {
           this.getData();
