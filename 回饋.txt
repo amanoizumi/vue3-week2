@@ -1,0 +1,15 @@
+1. 不同檔案類型可以用資料夾來分類哦，例如：將 .js 檔案都放在名稱為 js 的資料夾。這樣日後在找檔案時會比較方便
+
+2. axios 都需要加上 .catch() 來印出錯誤訊息，方便除錯
+
+3. 串接 API 時都需要判斷 response.data.success 是否為 true，除了透過 if 來判斷外，可以再補上 else，當回傳結果為 false 時，能給予使用者一些提示訊息
+
+4. 登出時可以將 Cookie 資料清除
+
+5. admin.js 第 69 行監聽事件呼叫的函式也可以加上 .bind(this)，讓函式內的 this 可以指向 app。
+
+修改後，函式內就可以改用 this 來取得資料。例如：
+
+btn.addEventListener('click', this.deleteProduct.bind(this));
+// 第 32 行
+this.getData()

@@ -5,18 +5,29 @@ const app = {
     products: [],
   },
   getData() {
-    axios.get(`${url}api/${path}/admin/products`).then((res) => {
-      if (!res.data.success) {
-        this.showError("取得商品列表失敗！");
-      } else {
-        this.data.products = res.data.products;
-        this.render();
-      }
-    });
+    axios
+      .get(`${url}api/${path}/admin/products`)
+      .then((res) => {
+        if (!res.data.success) {
+          this.showError("取得商品列表失敗！");
+        } else {
+          this.data.products = res.data.products;
+          this.render();
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   },
   logOut() {
     axios.post(`${url}logout`).then((res) => {
-      app.init();
+      if (!res.data.success) {
+        this.showError("登出失敗！");
+      } else {
+        const token = document.cookie.replace(/(?:(?:^|.*;\s*)shiMingToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        axios.defaults.headers.common.Authorization = token;
+        app.init();
+      }
     });
   },
   deleteProduct(e) {
@@ -26,13 +37,22 @@ const app = {
       showCancelButton: true,
       confirmButtonText: `確定`,
       cancelButtonText: `取消`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios.delete(`${url}api/${path}/admin/product/${productId}`).then((res) => {
-          app.getData();
-        });
-      }
-    });
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          axios.delete(`${url}api/${path}/admin/product/${productId}`).then((res) => {
+            if (!res.data.success) {
+              this.showE
+              rror("刪除商品失敗！");
+            } else {
+              this.getData();
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   },
   render() {
     const productList = document.querySelector("#productList");
@@ -66,23 +86,29 @@ const app = {
     productCount.innerHTML = this.data.products.length;
     const deleteBtn = document.querySelectorAll(".move");
     deleteBtn.forEach((btn) => {
-      btn.addEventListener("click", this.deleteProduct);
+      // 綁定 this 讓 deleteProduct 能使用 this.getData()
+      btn.addEventListener("click", this.deleteProduct.bind(this));
     });
   },
   init() {
     const token = document.cookie.replace(/(?:(?:^|.*;\s*)shiMingToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
     axios.defaults.headers.common.Authorization = token;
 
-    axios.post(`${url}api/user/check`).then((res) => {
-      if (!res.data.success) {
-        this.showError("您尚未登入！即將跳轉回登入頁面");
-        setTimeout(() => {
-          window.location.replace("login.html");
-        }, 3000);
-      } else {
-        this.getData();
-      }
-    });
+    axios
+      .post(`${url}api/user/check`)
+      .then((res) => {
+        if (!res.data.success) {
+          this.showError("您尚未登入！即將跳轉回登入頁面");
+          setTimeout(() => {
+            window.location.replace("login.html");
+          }, 3000);
+        } else {
+          this.getData();
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   },
   showError(title) {
     Swal.fire({

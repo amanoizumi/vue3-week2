@@ -25,31 +25,41 @@ function login(userData) {
   logInBtn.setAttribute("disabled", "");
   logInBtn.innerHTML = `登入中 <span class="js-spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
 
-  axios.post(`${url}admin/signin`, userData).then((res) => {
-    if (res.data.success) {
-      logInBtn.removeAttribute("disabled");
-      logInBtn.innerHTML = `登入`;
-      const { token, expired } = res.data;
-      // 把毫秒改成日期格式
-      document.cookie = `shiMingToken=${token}; expires=${new Date(expired)}`;
-      showSuccess("登入成功！");
-      setTimeout(() => {
-        window.location.replace("products_admin.html");
-      }, 3000);
-    } else {
-      logInBtn.removeAttribute("disabled");
-      logInBtn.innerHTML = `登入`;
-      showError("登入失敗");
-    }
-  });
+  axios
+    .post(`${url}admin/signin`, userData)
+    .then((res) => {
+      if (res.data.success) {
+        logInBtn.removeAttribute("disabled");
+        logInBtn.innerHTML = `登入`;
+        const { token, expired } = res.data;
+        // 把毫秒改成日期格式
+        document.cookie = `shiMingToken=${token}; expires=${new Date(expired)}`;
+        showSuccess("登入成功！");
+        setTimeout(() => {
+          window.location.replace("products_admin.html");
+        }, 3000);
+      } else {
+        logInBtn.removeAttribute("disabled");
+        logInBtn.innerHTML = `登入`;
+        showError("登入失敗");
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
 
 function checkLogIn() {
   const token = document.cookie.replace(/(?:(?:^|.*;\s*)shiMingToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
   axios.defaults.headers.common.Authorization = token;
-  axios.post(`${url}api/user/check`).then((res) => {
-    console.log(res);
-  });
+  axios
+    .post(`${url}api/user/check`)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
 
 function formCheck() {
